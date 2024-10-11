@@ -1,0 +1,13 @@
+{
+  "name": "create-dynamic-server",
+  "version": "1.0.0",
+  "description": "A CLI tool for setting up a new project with the Super Dynamic Server template.",
+  "main": "cli.js",
+  "bin": {
+    "create-dynamic-server": "cli.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "author": "Gracie Gould",
+  "license": "MIT"
+}
