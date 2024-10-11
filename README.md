@@ -14,4 +14,4 @@ A CLI tool for quickly setting up a new project with the **[Super Dynamic Server
 You can use this tool directly with `npx`:
 
 ```bash
-npx github:your-username/create-dynamic-server my-new-project
+npx create-dynamic-server my-new-project
