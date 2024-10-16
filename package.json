@@ -6,8 +6,10 @@
   "bin": {
     "create-dynamic-server": "cli.js"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "author": "Gracie Gould",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cli-color": "^2.0.4",
+    "cli-spinners": "^3.2.0"
+  }
 }
