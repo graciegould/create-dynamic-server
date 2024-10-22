@@ -4,7 +4,6 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
-const clc = require('cli-color'); 
 const { setInterval, clearInterval } = require('timers');
 const REPO_URL = 'https://github.com/graciegould/super-dynamic-server.git';
 const rl = readline.createInterface({
@@ -17,8 +16,8 @@ const checkExistingNodeProject = (projectPath) => {
 };
 
 const promptUser = (question) => {
-    return new Promise((resolve) => {
-    rl.question(clc.yellow(question), (answer) => {
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
       resolve(answer.toLowerCase());
     });
   });
@@ -29,12 +28,12 @@ const startSpinner = (message) => {
   let i = 0;
 
   const interval = setInterval(() => {
-    process.stdout.write('\r' + message + clc.cyan(spinnerChars[i++ % spinnerChars.length]) + ' ');
+    process.stdout.write('\r' + message + spinnerChars[i++ % spinnerChars.length] + ' ');
   }, 100);
 
   return () => {
     clearInterval(interval);
-    process.stdout.write('\r' + message + clc.green('✔') + '\n'); 
+    process.stdout.write('\r' + message + '✔\n');
   };
 };
 
@@ -54,11 +53,11 @@ if (projectName === '.') {
       const answer = await promptUser('A Node.js project already exists in this directory. Do you want to overwrite it? (y/n): ');
 
       if (answer !== 'y') {
-        console.log(clc.red('Project creation aborted.'));
+        console.log('Project creation aborted.');
         process.exit(0);
       }
     }
-    const stopCloneSpinner = startSpinner(`🍋Cloning repository into ${clc.green(projectPath)}🍋...`);
+    const stopCloneSpinner = startSpinner(`Cloning repository into ${projectPath}...`);
     execSync(`git clone ${REPO_URL} "${projectPath}" --depth 1`);
     stopCloneSpinner();  
     process.chdir(projectPath);
@@ -87,11 +86,11 @@ if (projectName === '.') {
     const stopInstallSpinner = startSpinner('Installing dependencies...');
     execSync('npm install', { stdio: 'inherit' });
     stopInstallSpinner();
-    console.log(clc.cyan('\nSetup complete! To get started:'));
-    console.log(clc.yellow(`  cd ${projectName}`));
-    console.log(clc.yellow('  npm start'));
+    console.log('\nSetup complete! To get started:');
+    console.log(`  cd ${projectName}`);
+    console.log('  npm start');
   } catch (error) {
-    console.error(clc.red('An error occurred:', error.message));
+    console.error('An error occurred:', error.message);
     process.exit(1);
   } finally {
     rl.close();

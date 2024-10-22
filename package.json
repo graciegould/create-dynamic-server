@@ -8,8 +8,35 @@
   },
   "author": "Gracie Gould",
   "license": "MIT",
-  "dependencies": {
-    "cli-color": "^2.0.4",
-    "cli-spinners": "^3.2.0"
-  }
+  "keywords": [
+    "super-dynamic-server",
+    "webpack template",
+    "react",
+    "vanilla JS",
+    "server template",
+    "Express server",
+    "JavaScript server template",
+    "Node.js",
+    "webpack",
+    "gulp",
+    "nodemon",
+    "single-page app",
+    "multi-page app",
+    "HMR",
+    "hot module replacement",
+    "dynamic server",
+    "JavaScript",
+    "Node.js automation",
+    "project template",
+    "boilerplate",
+    "npm script",
+    "npm automation",
+    "project generator",
+    "clone and setup",
+    "server setup script",
+    "automated project setup",
+    "template",
+    "starter template",
+    "boilerplate"
+  ]
 }
