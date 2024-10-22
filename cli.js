@@ -6,7 +6,7 @@ const path = require('path');
 const readline = require('readline');
 const clc = require('cli-color'); 
 const { setInterval, clearInterval } = require('timers');
-
+const REPO_URL = 'https://github.com/graciegould/super-dynamic-server.git';
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -48,8 +48,6 @@ if (projectName === '.') {
   projectPath = path.resolve(process.cwd(), projectName);
 }
 
-const repoURL = 'https://github.com/graciegould/super-dynamic-server.git';
-
 (async () => {
   try {
     if (checkExistingNodeProject(projectPath)) {
@@ -60,13 +58,32 @@ const repoURL = 'https://github.com/graciegould/super-dynamic-server.git';
         process.exit(0);
       }
     }
-    const stopCloneSpinner = startSpinner(`Cloning repository into ${clc.green(projectPath)}...`);
-    execSync(`git clone ${repoURL} "${projectPath}" --depth 1`);
+    const stopCloneSpinner = startSpinner(`🍋Cloning repository into ${clc.green(projectPath)}🍋...`);
+    execSync(`git clone ${REPO_URL} "${projectPath}" --depth 1`);
     stopCloneSpinner();  
     process.chdir(projectPath);
     const stopRemoveSpinner = startSpinner('Removing .git folder...');
     fs.rmSync(path.join(projectPath, '.git'), { recursive: true, force: true });
     stopRemoveSpinner();
+    
+    // Ensure .env is untracked
+    const gitignorePath = path.join(projectPath, '.gitignore');
+    if (!fs.existsSync(gitignorePath)) {
+      fs.writeFileSync(gitignorePath, '.env\n');
+    } else {
+      const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+      if (!gitignoreContent.includes('.env')) {
+        fs.appendFileSync(gitignorePath, '\n.env\n');
+      }
+    }
+
+    // Reinitialize Git repository and make initial commit
+    const stopInitSpinner = startSpinner('Reinitializing Git repository...');
+    execSync('git init', { stdio: 'ignore' });
+    execSync('git add .', { stdio: 'ignore' });
+    execSync('git commit -m "Initial commit"', { stdio: 'ignore' });
+    stopInitSpinner();
+
     const stopInstallSpinner = startSpinner('Installing dependencies...');
     execSync('npm install', { stdio: 'inherit' });
     stopInstallSpinner();
