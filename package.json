@@ -1,6 +1,6 @@
 {
   "name": "create-dynamic-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A CLI tool for setting up a new project with the Super Dynamic Server template.",
   "main": "cli.js",
   "bin": {
@@ -38,5 +38,8 @@
     "template",
     "starter template",
     "boilerplate"
-  ]
+  ],
+  "dependencies": {
+    "console-palette": "^1.0.1"
+  }
 }
