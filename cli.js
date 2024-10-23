@@ -12,14 +12,9 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-// Check if a package.json exists in the directory, indicating a Node.js project
+// Function to check if the directory has a package.json (i.e., a Node.js project)
 const checkExistingNodeProject = (projectPath) => {
   return fs.existsSync(path.join(projectPath, 'package.json'));
-};
-
-// Check if the directory exists and is not empty
-const checkIfDirectoryExistsAndNotEmpty = (directoryPath) => {
-  return fs.existsSync(directoryPath) && fs.readdirSync(directoryPath).length > 0;
 };
 
 // Prompt the user for input
@@ -71,7 +66,7 @@ if (projectName === '.') {
 (async () => {
   try {
     // Check if the directory is not empty or has an existing Node.js project
-    if (checkIfDirectoryExistsAndNotEmpty(projectPath) || checkExistingNodeProject(projectPath)) {
+    if (fs.existsSync(projectPath) && fs.readdirSync(projectPath).length > 0) {
       const answer = await promptUser(cp.custom(
         `Directory ${projectPath} already exists and is not empty. Do you want to clear the directory and continue? (y/n): `,
         { color: "yellow", style: "bold" }
@@ -88,31 +83,20 @@ if (projectName === '.') {
       stopClearSpinner();
     }
 
+    // Clone the repository into the specified project path
     const stopCloneSpinner = startSpinner(cp.brightMagenta(`Cloning repository into ${projectPath}...`));
-    execSync(`git clone ${REPO_URL} "${projectPath}" --depth 1`, { stdio: 'inherit' });
+    execSync(`git clone ${REPO_URL} "${projectPath}" --depth 1`);
     stopCloneSpinner();
 
-    const stopRemoveSpinner = startSpinner(cp.cyan('Removing .git folder...'));
-    fs.rmSync(path.join(projectPath, '.git'), { recursive: true, force: true });
-    stopRemoveSpinner();
-
-    // Ensure .env is untracked in .gitignore
-    const gitignorePath = path.join(projectPath, '.gitignore');
-    if (!fs.existsSync(gitignorePath)) {
-      fs.writeFileSync(gitignorePath, '.env\n');
-    } else {
-      const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
-      if (!gitignoreContent.includes('.env')) {
-        fs.appendFileSync(gitignorePath, '\n.env\n');
-      }
+    // Ensure the package.json exists before running npm install
+    const packageJsonPath = path.join(projectPath, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      console.error(cp.red(`Error: package.json not found in ${projectPath}. Aborting npm install.`));
+      process.exit(1);
     }
 
-    // Reinitialize Git repository and make an initial commit
-    const stopInitSpinner = startSpinner(cp.cyan('Reinitializing Git repository...'));
-    execSync('git init', { stdio: 'ignore' });
-    execSync('git add .', { stdio: 'ignore' });
-    execSync('git commit -m "Initial commit"', { stdio: 'ignore' });
-    stopInitSpinner();
+    // Change to the project directory and run npm install
+    process.chdir(projectPath);
 
     const stopInstallSpinner = startSpinner(cp.cyan('Installing dependencies...'));
     execSync('npm install', { stdio: 'inherit' });
